@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.kimeeo.kAndroid.core.fragment.BaseFragment;
+import com.kimeeo.kAndroid.viewPagerExt.verticalViewPager.VerticalViewPager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         views.put(R.id.nav_horizontal_flip, FlippableHorizontalStackViewPager.class);
         views.put(R.id.nav_vertical_flip, FlippableVerticalStackViewPager.class);
-
+        views.put(R.id.nav_vertical_pager, VerticalViewPagerDemo.class);
 
 
         loadView(R.id.nav_horizontal_flip);

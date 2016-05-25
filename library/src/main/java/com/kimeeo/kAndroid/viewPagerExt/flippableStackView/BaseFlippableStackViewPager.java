@@ -152,27 +152,33 @@ abstract public class BaseFlippableStackViewPager extends BaseViewPager
         final Runnable runnablelocal = new Runnable() {
             @Override
             public void run() {
-                if(firstDataIn) {
-                    mViewPager.setAdapter(mAdapter);
-                    mViewPager.invalidate();
-                    firstDataIn=false;
-                }
-                else {
-                    if(isFetchingRefresh) {
-                        int oldIndex = getDataProvider().size()-1;
+                try {
+                    if(firstDataIn) {
                         mViewPager.setAdapter(mAdapter);
                         mViewPager.invalidate();
-                        gotoItem(oldIndex, true);
+                        firstDataIn=false;
                     }
-                    else
-                    {
-                        int oldIndex = getCurrentItem() + dataList.size();
-                        mViewPager.setAdapter(mAdapter);
-                        mViewPager.invalidate();
-                        gotoItem(oldIndex, false);
-                    }
+                    else {
+                        if(isFetchingRefresh) {
+                            int oldIndex = getDataProvider().size()-1;
+                            mViewPager.setAdapter(mAdapter);
+                            mViewPager.invalidate();
+                            gotoItem(oldIndex, true);
+                        }
+                        else
+                        {
+                            int oldIndex = getCurrentItem() + dataList.size();
+                            mViewPager.setAdapter(mAdapter);
+                            mViewPager.invalidate();
+                            gotoItem(oldIndex, false);
+                        }
                         firstDataIn = false;
+                    }
+                }catch (Exception e)
+                {
+
                 }
+
             }
         };
         handler.postDelayed(runnablelocal, 500);
