@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
 import com.bartoszlipinski.flippablestackview.FlippableStackView;
 import com.bartoszlipinski.flippablestackview.StackPageTransformer;
+import com.kimeeo.kAndroid.listViews.dataProvider.DataProvider;
 import com.kimeeo.kAndroid.listViews.pager.BaseViewPager;
 import com.kimeeo.kAndroid.listViews.pager.viewPager.BaseViewPagerAdapter;
 import com.kimeeo.kAndroid.viewPagerExt.R;
@@ -98,13 +99,7 @@ abstract public class BaseFlippableStackViewPager extends BaseViewPager
         onViewCreated(mRootView);
         return mRootView;
     }
-    protected void configSwipeRefreshLayout(SwipeRefreshLayout view) {
-        super.configSwipeRefreshLayout(view);
-        /*
-        if(view!=null)
-            view.setEnabled(false);
-        */
-    }
+
     protected void configViewPager(FlippableStackView mList, BaseViewPagerAdapter mAdapter, View indicator) {
 
     }
@@ -119,32 +114,31 @@ abstract public class BaseFlippableStackViewPager extends BaseViewPager
     {
         if(mViewPager!=null)
         {
-            Object iBaseObject = getDataProvider().get(position);
+            Object iBaseObject = this.getDataProvider().get(position);
+            onPageChange(iBaseObject, position);
+            setCurrentItem(position);
+
             onPageChange(iBaseObject, position);
 
-            if (getDataProvider().getCanLoadNext() && position == getDataProvider().size() - 1)
+            if (getDataProvider().getCanLoadNext() && position == 0)
                 next();
 
 
-            if (getDataProvider().getCanLoadRefresh() && position == 0) {
-                if (getSwipeRefreshLayout() != null) {
-                    refresh();
-
+            if (getDataProvider().getCanLoadRefresh() && position == (getDataProvider().size() - 1)) {
+                if (getSwipeRefreshLayout() != null)
                     getSwipeRefreshLayout().setEnabled(true);
-                }
-                else
-                    refresh();
-            } else if (getSwipeRefreshLayout() != null) {
+            } else if (getSwipeRefreshLayout() != null)
                 getSwipeRefreshLayout().setEnabled(false);
-            }
         }
     }
-
+    protected void configDataManager(DataProvider dataProvider) {
+        dataProvider.setEnterReverse(true);
+    }
 
 
     public void onFetchingStart(boolean isFetchingRefresh) {
         super.onFetchingStart(isFetchingRefresh);
-        if(mProgressBar!=null && firstItemIn==false)
+        if(mProgressBar!=null && isFetchingRefresh==false)
             mProgressBar.setVisibility(View.VISIBLE);
     }
 
@@ -157,15 +151,10 @@ abstract public class BaseFlippableStackViewPager extends BaseViewPager
         updateProgress();
     }
 
-    public void onFetchingEnd(List<?> dataList, boolean isFetchingRefresh) {
+    public void onFetchingEnd(final List<?> dataList,final boolean isFetchingRefresh) {
         super.onFetchingEnd(dataList,isFetchingRefresh);
         updateProgress();
-    }
-    public void onFetchingFinish(boolean isFetchingRefresh) {
-        super.onFetchingFinish(isFetchingRefresh);
-        updateProgress();
-    }
-    protected void updateProgress() {
+
         final Handler handler = new Handler();
         final Runnable runnablelocal = new Runnable() {
             @Override
@@ -175,10 +164,39 @@ abstract public class BaseFlippableStackViewPager extends BaseViewPager
                     mViewPager.invalidate();
                     firstDataIn=false;
                 }
+                else {
+                    if(isFetchingRefresh) {
+                        int oldIndex = getDataProvider().size()-1;
+                        mViewPager.setAdapter(mAdapter);
+                        mViewPager.invalidate();
+                        gotoItem(oldIndex, true);
+                    }
+                    else
+                    {
+                        int oldIndex = getCurrentItem() + dataList.size();
+                        mViewPager.setAdapter(mAdapter);
+                        mViewPager.invalidate();
+                        gotoItem(oldIndex, false);
+                    }
+                        firstDataIn = false;
+                }
             }
         };
-        handler.postDelayed(runnablelocal, 1000);
+        handler.postDelayed(runnablelocal, 500);
+    }
+    public void onFetchingFinish(boolean isFetchingRefresh) {
+        super.onFetchingFinish(isFetchingRefresh);
+        updateProgress();
+    }
+    @Override
+    public void gotoItem(int value, Boolean scroll) {
+        if(this.mViewPager != null) {
+            this.mViewPager.setCurrentItem(value, scroll.booleanValue());
+        }
 
+        this.setCurrentItem(value);
+    }
+    protected void updateProgress() {
         if(mProgressBar!=null)
             mProgressBar.setVisibility(View.GONE);
         firstItemIn = true;
