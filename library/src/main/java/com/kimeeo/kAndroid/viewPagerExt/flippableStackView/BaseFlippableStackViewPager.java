@@ -85,18 +85,11 @@ abstract public class BaseFlippableStackViewPager extends BaseViewPager
 
         mEmptyViewHelper = createEmptyViewHelper();
         createAdapter(mViewPager);
-
-
-        //mViewPager.setPageTransformer(true, new RotateUpTransformer());
-
-        next();
         configViewPager(mViewPager, mAdapter, mIndicator);
-
         if(mRootView.findViewById(getProgressBarResID())!=null)
             mProgressBar= mRootView.findViewById(getProgressBarResID());
-
-
         onViewCreated(mRootView);
+        next();
         return mRootView;
     }
 
