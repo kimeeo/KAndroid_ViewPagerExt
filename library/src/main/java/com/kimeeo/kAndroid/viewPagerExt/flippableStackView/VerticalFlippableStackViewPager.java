@@ -3,7 +3,7 @@ package com.kimeeo.kAndroid.viewPagerExt.flippableStackView;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.bartoszlipinski.flippablestackview.StackPageTransformer;
-import com.kimeeo.kAndroid.listViews.dataProvider.DataProvider;
+import com.kimeeo.kAndroid.dataProvider.DataProvider;
 
 /**
  * Created by bhavinpadhiyar on 1/22/16.

@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
 import com.bartoszlipinski.flippablestackview.FlippableStackView;
 import com.bartoszlipinski.flippablestackview.StackPageTransformer;
-import com.kimeeo.kAndroid.listViews.dataProvider.DataProvider;
+import com.kimeeo.kAndroid.dataProvider.DataProvider;
 import com.kimeeo.kAndroid.listViews.pager.BaseViewPager;
 import com.kimeeo.kAndroid.listViews.pager.viewPager.BaseViewPagerAdapter;
 import com.kimeeo.kAndroid.viewPagerExt.R;
